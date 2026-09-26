@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TrendyShop - Online Alışveriş</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+  
+  body { background: #f5f5f5; }
+  
+  /* HEADER */
+  header {
+    background: #f27a1a;
+    padding: 15px 30px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  
+  .logo {
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .search-bar {
+    flex: 1;
+    display: flex;
+  }
+  
+  .search-bar input {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px 0 0 8px;
+    outline: none;
+    font-size: 14px;
+  }
+  
+  .search-bar button {
+    padding: 12px 25px;
+    background: #e05a00;
+    color: white;
+    border: none;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .header-actions {
+    display: flex;
+    gap: 20px;
+    color: white;
+    align-items: center;
+  }
+  
+  .header-actions div {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  /* KATEGORİLER */
+  .categories {
+    background: white;
+    padding: 15px 30px;
+    display: flex;
+    gap: 25px;
+    overflow-x: auto;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  
+  .categories span {
+    cursor: pointer;
+    white-space: nowrap;
+    font-size: 14px;
+    color: #333;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: 0.2s;
+  }
+  
+  .categories span:hover {
+    background: #fff3e8;
+    color: #f27a1a;
+  }
+  
+  /* BANNER */
+  .banner {
+    margin: 20px 30px;
+    background: linear-gradient(135deg, #f27a1a, #ff9f4a);
+    border-radius: 12px;
+    padding: 50px;
+    color: white;
+    text-align: center;
+  }
+  
+  .banner h1 { font-size: 36px; margin-bottom: 10px; }
+  .banner p { font-size: 18px; opacity: 0.95; }
+  
+  /* ÜRÜNLER */
+  .section-title {
+    margin: 30px 30px 15px;
+    font-size: 22px;
+    color: #333;
+  }
+  
+  .products {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+    padding: 0 30px 40px;
+  }
+  
+  .product-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  
+  .product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  }
+  
+  .product-img {
+    width: 100%;
+    height: 220px;
+    background: #fafafa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 70px;
+  }
+  
+  .product-info { padding: 12px; }
+  
+  .product-info h3 {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 8px;
+    height: 40px;
+    overflow: hidden;
+  }
+  
+  .price {
+    color: #f27a1a;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .old-price {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 13px;
+    margin-left: 8px;
+  }
+  
+  .discount {
+    background: #f27a1a;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    margin-left: 5px;
+  }
+  
+  .add-cart {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    background: #f27a1a;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+  }
+  
+  .add-cart:hover { background: #e05a00; }
+  
+  /* SEPET MODAL */
+  .cart-modal {
+    display: none;
+    position: fixed;
+    top: 0; right: 0;
+    width: 400px;
+    height: 100vh;
+    background: white;
+    box-shadow: -5px 0 20px rgba(0,0,0,0.2);
+    z-index: 200;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  
+  .cart-modal.open { display: block; }
+  
+  .cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+  }
+  
+  .cart-header h2 { color: #f27a1a; }
+  
+  .close-cart {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+  }
+  
+  .cart-item {
+    display: flex;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .cart-item-img {
+    width: 60px;
+    height: 60px;
+    background: #fafafa;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+  }
+  
+  .cart-item-info { flex: 1; }
+  .cart-item-info h4 { font-size: 13px; margin-bottom: 5px; }
+  .cart-item-info .price { font-size: 15px; }
+  
+  .remove-btn {
+    background: #ff4444;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    height: fit-content;
+  }
+  
+  .cart-total {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid #f27a1a;
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .checkout-btn {
+    width: 100%;
+    margin-top: 15px;
+    padding: 15px;
+    background: #f27a1a;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .checkout-btn:hover { background: #e05a00; }
+  
+  .empty-cart {
+    text-align: center;
+    color: #999;
+    padding: 40px 0;
+  }
+  
+  /* OVERLAY */
+  .overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 150;
+  }
+  
+  .overlay.open { display: block; }
+  
+  /* FOOTER */
+  footer {
+    background: #2c2c2c;
+    color: #ccc;
+    text-align: center;
+    padding: 30px;
+    margin-top: 40px;
+  }
+  
+  footer p { margin: 5px 0; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo" onclick="alert('Ana sayfaya dönüldü!')">🛍️ TrendyShop</div>
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Ürün, kategori veya marka ara...">
+    <button onclick="searchProducts()">Ara</button>
+  </div>
+  <div class="header-actions">
+    <div onclick="alert('Giriş sayfası')">👤 Giriş</div>
+    <div onclick="toggleCart()">🛒 Sepet (<span id="cartCount">0</span>)</div>
+  </div>
+</header>
+
+<!-- KATEGORİLER -->
+<div class="categories">
+  <span onclick="filterCategory('all')">Tümü</span>
+  <span onclick="filterCategory('elektronik')">Elektronik</span>
+  <span onclick="filterCategory('giyim')">Giyim</span>
+  <span onclick="filterCategory('ev')">Ev & Yaşam</span>
+  <span onclick="filterCategory('kozmetik')">Kozmetik</span>
+  <span onclick="filterCategory('spor')">Spor</span>
+  <span onclick="filterCategory('kitap')">Kitap</span>
+</div>
+
+<!-- BANNER -->
+<div class="banner">
+  <h1>🔥 Büyük İndirim!</h1>
+  <p>Seçili ürünlerde %50'ye varan indirimler</p>
+</div>
+
+<!-- ÜRÜNLER -->
+<h2 class="section-title">Öne Çıkan Ürünler</h2>
+<div class="products" id="products"></div>
+
+<!-- SEPET MODAL -->
+<div class="overlay" id="overlay" onclick="toggleCart()"></div>
+<div class="cart-modal" id="cartModal">
+  <div class="cart-header">
+    <h2>🛒 Sepetim</h2>
+    <button class="close-cart" onclick="toggleCart()">✕</button>
+  </div>
+  <div id="cartItems"></div>
+  <div class="cart-total">
+    <span>Toplam:</span>
+    <span id="cartTotal">0 ₺</span>
+  </div>
+  <button class="checkout-btn" onclick="checkout()">Alışverişi Tamamla</button>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 TrendyShop - Tüm hakları saklıdır</p>
+  <p>Hakkımızda | İletişim | Kariyer | Yardım</p>
+</footer>
+
+<script>
+// ÜRÜN LİSTESİ
+const products = [
+  { id: 1, name: "Kablosuz Kulaklık Bluetooth 5.0", price: 499, oldPrice: 899, icon: "🎧", category: "elektronik" },
+  { id: 2, name: "Akıllı Saat Spor Takip", price: 1299, oldPrice: 1999, icon: "⌚", category: "elektronik" },
+  { id: 3, name: "Erkek Slim Fit Gömlek", price: 249, oldPrice: 399, icon: "👔", category: "giyim" },
+  { id: 4, name: "Kadın Yüksek Bel Jean", price: 349, oldPrice: 599, icon: "👖", category: "giyim" },
+  { id: 5, name: "Aromatik Mum Seti 3'lü", price: 189, oldPrice: 299, icon: "🕯️", category: "ev" },
+  { id: 6, name: "Yoga Matı Kaymaz 6mm", price: 229, oldPrice: 349, icon: "🧘", category: "spor" },
+  { id: 7, name: "Cilt Bakım Kremi Nemlendirici", price: 159, oldPrice: 259, icon: "🧴", category: "kozmetik" },
+  { id: 8, name: "Roman Seti 5 Kitap", price: 179, oldPrice: 299, icon: "📚", category: "kitap" },
+  { id: 9, name: "Bluetooth Hoparlör Su Geçirmez", price: 599, oldPrice: 999, icon: "🔊", category: "elektronik" },
+  { id: 10, name: "Spor Ayakkabı Hafif", price: 799, oldPrice: 1299, icon: "👟", category: "spor" },
+  { id: 11, name: "Çelik Tencere Seti 7 Parça", price: 1499, oldPrice: 2499, icon: "🍳", category: "ev" },
+  { id: 12, name: "Parfüm Kadın 50ml", price: 449, oldPrice: 749, icon: "🌸", category: "kozmetik" }
+];
+
+let cart = [];
+let currentCategory = 'all';
+let searchQuery = '';
+
+// ÜRÜNLERİ GÖSTER
+function renderProducts() {
+  const container = document.getElementById('products');
+  let filtered = products;
+  
+  if (currentCategory !== 'all') {
+    filtered = filtered.filter(p => p.category === currentCategory);
+  }
+  
+  if (searchQuery) {
+    filtered = filtered.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  }
+  
+  if (filtered.length === 0) {
+    container.innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding:40px; color:#999;">Ürün bulunamadı 😔</p>';
+    return;
+  }
+  
+  container.innerHTML = filtered.map(p => {
+    const discount = Math.round((1 - p.price / p.oldPrice) * 100);
+    return `
+      <div class="product-card">
+        <div class="product-img">${p.icon}</div>
+        <div class="product-info">
+          <h3>${p.name}</h3>
+          <div>
+            <span class="price">${p.price} ₺</span>
+            <span class="old-price">${p.oldPrice} ₺</span>
+            <span class="discount">%${discount}</span>
+          </div>
+          <button class="add-cart" onclick="addToCart(${p.id})">Sepete Ekle</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// SEPETE EKLE
+function addToCart(id) {
+  const product = products.find(p => p.id === id);
+  const existing = cart.find(item => item.id === id);
+  
+  if (existing) {
+    existing.qty++;
+  } else {
+    cart.push({ ...product, qty: 1 });
+  }
+  
+  updateCart();
+  showNotification(`${product.name} sepete eklendi! ✅`);
+}
+
+// SEPETİ GÜNCELLE
+function updateCart() {
+  const cartItems = document.getElementById('cartItems');
+  const cartCount = document.getElementById('cartCount');
+  const cartTotal = document.getElementById('cartTotal');
+  
+  const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
+  const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  
+  cartCount.textContent = totalCount;
+  cartTotal.textContent = totalPrice.toLocaleString('tr-TR') + ' ₺';
+  
+  if (cart.length === 0) {
+    cartItems.innerHTML = '<div class="empty-cart">🛒 Sepetiniz boş</div>';
+    return;
+  }
+  
+  cartItems.innerHTML = cart.map(item => `
+    <div class="cart-item">
+      <div class="cart-item-img">${item.icon}</div>
+      <div class="cart-item-info">
+        <h4>${item.name}</h4>
+        <div class="price">${item.price} ₺ x ${item.qty}</div>
+      </div>
+      <button class="remove-btn" onclick="removeFromCart(${item.id})">Sil</button>
+    </div>
+  `).join('');
+}
+
+// SEPETTEN ÇIKAR
+function removeFromCart(id) {
+  cart = cart.filter(item => item.id !== id);
+  updateCart();
+}
+
+// SEPET AÇ/KAPAT
+function toggleCart() {
+  document.getElementById('cartModal').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+}
+
+// KATEGORİ FİLTRELE
+function filterCategory(cat) {
+  currentCategory = cat;
+  renderProducts();
+}
+
+// ARAMA
+function searchProducts() {
+  searchQuery = document.getElementById('searchInput').value;
+  renderProducts();
+}
+
+// ENTER İLE ARAMA
+document.getElementById('searchInput').addEventListener('keypress', e => {
+  if (e.key === 'Enter') searchProducts();
+});
+
+// ALIŞVERİŞ TAMAMLA
+function checkout() {
+  if (cart.length === 0) {
+    alert('Sepetiniz boş!');
+    return;
+  }
+  const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  alert(`✅ Siparişiniz alındı!\n\nToplam: ${total.toLocaleString('tr-TR')} ₺\n\nBizi tercih ettiğiniz için teşekkürler!`);
+  cart = [];
+  updateCart();
+  toggleCart();
+}
+
+// BİLDİRİM
+function showNotification(msg) {
+  const notif = document.createElement('div');
+  notif.textContent = msg;
+  notif.style.cssText = `
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+    background: #27ae60; color: white; padding: 15px 25px; border-radius: 8px;
+    z-index: 999; box-shadow: 0 4px 15px rgba(0,0,0,0.2); font-weight: bold;
+    animation: slideUp 0.3s ease;
+  `;
+  document.body.appendChild(notif);
+  setTimeout(() => notif.remove(), 2000);
+}
+
+// BAŞLAT
+renderProducts();
+updateCart();
+</script>
+</body>
+  </html>
